@@ -138,3 +138,10 @@ ou
   - Chaque dossier de catégorie contiendra
     - un fichier csv contenant les informations de chaque livre de cette catégorie
     ainsi qu'un dossier contenant les images de chaque livre de cette catégorie
+    
+**Vous pouvez à tout moment accéder aux informations téléchargées:**
+
+- Depuis votre dossier directement
+- Depuis votre éditeur de code si le click droit de la souris vous permet d'ouvrir le dossier en même temps que l'éditeur de code
+- Depuis la ligne de commande
+    -  Par exemple si vous utilisez VSCode, depuis la ligne de commande, vous tapez "code"
