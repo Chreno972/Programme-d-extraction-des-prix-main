@@ -16,14 +16,13 @@ Le plus simple est de télécharger sa version ZIP, donc cliquez sur Download ZI
 - rendez-vous [sur le site](https://www.python.org/downloads/) et télécharger la dernière version de python
 - Cocher la case 'Add Python 3.9 to PATH'. Cette version installe automatiquement pip, qui va nous être très utile pour la suite.
 - Le reste se fait tout seul.
-- Pour une installation sur mac, il suffit de faire la même chose que pour windows 10 et installer comme tout logiciel que vous
-- pourriez installer sur votre mac
+- Pour une installation sur mac, il suffit de faire la même chose que pour windows 10 et installer comme tout logiciel que vous pourriez installer sur votre mac
 
     > Vous pouvez utiliser "vscode", l'un des plus puissants éditeurs de code qui   simule une ligne de commande, mais je vous conseille plus d'utiliser votre ligne de commande Windows ou Mac
 
 **Une fois le dossier téléchargé!**
 
-- ***Récupérez*** le, faites un copier coller de votre dossier de téléchargement jusqu'à un dossier de votre choix, de préférence vierge.
+- ***Récupérez*** le, faites un couper coller du fichier ZIP dans votre dossier de téléchargements jusqu'à un dossier de votre choix, de préférence vierge.
 - ***décompressez*** le fichier ZIP
 - ***Ouvrez*** le dossier qui contient désormais:
   - Un dossier " *projet* " qui contient tous les scripts
