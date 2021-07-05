@@ -139,6 +139,3 @@ ou
   - Chaque dossier de catégorie contiendra
     - un fichier csv contenant les informations de chaque livre de cette catégorie
     ainsi qu'un dossier contenant les images de chaque livre de cette catégorie
-
-Une fois toutes les informations téléchargés, vous êtes automatiquement redirigés vers un menu
-pour accéder à ces informations.
