@@ -56,6 +56,7 @@ def books_links(page_categorie, le_lien_livres):
 
 def book_infos_from_cat_url(the_link):
     response = requests.get(the_link)
+    response.encoding = 'utf-8'
     if response.ok:
         book_info_soup = bs(response.text, 'html.parser')
 
@@ -65,47 +66,53 @@ def book_infos_from_cat_url(the_link):
         for td in tds:
             tds_arr.append(td.string)
         universal_product_code = tds_arr[0]
+
         price_excluding_tax = cls(tds_arr[2], ['Â', '£'], '')
         price_including_tax = cls(tds_arr[3], ['Â', '£'], '')
+
         number_available = re.findall('\d+', tds_arr[5])
         number_available = cls(str(number_available), ["[", "]", "'"], '')
+
         title = book_info_soup.title.string
-        title = cls(str(title), [' | Books to Scrape - Sandbox', '?', '**', '"', ',', 'â', '\x80', '\x99', '#', ":", ")", "("], '')
+        title = cls(str(title), [' | Books to Scrape - Sandbox', '?', '**', '"', ',', 'â', '\x80', '\x99', '#', ":", ")", "(", '...', '*'], '')
         title = title.strip()
         title = title.replace("'", " ")
+        title = title.replace("Ã©", "é")
         title = title.replace(' ', '_')
         title = title.replace('/', '_')
         title = title.replace('Vol._', 'Vol.')
         title = re.sub(r'\([^)]*\)', '', title)
+        title = title[:84]
+
         cat_lis = book_info_soup.find('ul', class_="breadcrumb").contents[5].find('a')
         cat_name = cat_lis.string.replace(' ', '-')
-        category_url = cat_lis.get('href').replace('../', 'http://books.toscrape.com/catalogue/')
+
         img_url = book_info_soup.find("div", class_="item active").find_next('img').get('src')
         img_url = img_url.replace('../../', 'http://books.toscrape.com/')
+
         try:
             product_description = book_info_soup.find('div', id="product_description").find_next('p').next_element
         except AttributeError:
             product_description = "Not Found"
+        
         review_rating = book_info_soup.find("p", class_="instock availability").find_next('p').get('class')[1]
+
         rating_numbers = {'One':1, 'Two':2, 'Three':3, 'Four':4, 'Five':5}
+
         for key, value in rating_numbers.items():
             if review_rating in key:
                 review_rating = review_rating.replace(review_rating, str(value))
         review_rating = review_rating
-        # cleaned variables
-        title = str(title)
-        category_url = category_url
+
         category_name = cat_name
-        universal_product_code = universal_product_code
-        price_excluding_tax = price_excluding_tax
-        price_including_tax = price_including_tax
-        number_available = number_available
         image_url = img_url
         url_livre = the_link
-        review_rating = review_rating
-        product_description = str(product_description).replace(',', ' ')
+        try:
+            product_description = cls(str(product_description), [',', ' -- ', '--', '—', '  ', '“', '”', '"', '•'], ' ')
+        except:
+            pass
+
         the_books_list = url_livre,universal_product_code,title,price_including_tax,price_excluding_tax,number_available,category_name,review_rating,image_url,product_description
-        cnt = 0
         return the_books_list
 
 def write_infos(the_books_list):
@@ -155,7 +162,7 @@ def website_create_folders(tfold, cat_list_tt):
             os.mkdir("images")
         else:
             print("le fichier spécifié existe déjà")
-        cmd = f"echo product_page_url;universal_product_code;title;price_including_tax;price_excluding_tax;number_available;category;review_rating;image_url;product_description > {fold}_books.csv"
+        cmd = f"echo product_page_url;universal_product_code;title;price_including_tax;price_excluding_tax;number_available;category;review_rating;image_url;product_description > infos.csv"
         os.system(cmd)
     time.sleep(3)
     print('les dossiers et fichiers ont été crées\n')

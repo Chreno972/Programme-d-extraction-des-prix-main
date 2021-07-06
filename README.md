@@ -45,6 +45,11 @@ Pour y accéder:
 
 ---
 
+    Une fois arrivé au dossier du projet, pour voir le contenu du dossier tapez dans le terminal:
+    ` dir `
+
+---
+
     Tapez dans le terminal:
     ` python3 -m venv (nom de l'environnement virtuel) `
 
@@ -59,11 +64,6 @@ Pour y accéder:
 
     Revenez dans le dossier du projet:
     ` cd ../../ `
-
----
-
-    Installer 'pip':
-    ` pip install pip `
 
 ---
 

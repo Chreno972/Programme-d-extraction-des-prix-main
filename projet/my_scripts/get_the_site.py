@@ -76,4 +76,4 @@ if response.ok:
                     tf.write_infos(my_list)
             os.chdir('../../')
 
-print('Informations écrites avec succès, vous pouvez consulter les fichiers csv')
+print('Informations écrites avec succès, vous pouvez consulter les fichiers dans downloads/tout_le_site')
