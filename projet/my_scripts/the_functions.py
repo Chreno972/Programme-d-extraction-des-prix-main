@@ -21,10 +21,10 @@ def cls(str_to_clean, replacement_items_array, replace_by):
     for item in replacement_items_array:
         if item in str_to_clean:
             str_to_clean = str_to_clean.replace(item, replace_by)
-            new_str = str_to_clean
-    return(new_str)
+    return(str_to_clean)
 
 
+# récupérer le lien de chaque catégorie, et trouver les catégories avec plusieurs pages
 def get_cat_book_link(lien, liste):
     liste.append(lien)
     try:
@@ -36,12 +36,16 @@ def get_cat_book_link(lien, liste):
     except:
         pass
 
+
+# Sauvegarder dans une nouvelle liste uniquement les urls fonctionnelles
 def urx_treatments(urz, nouvelle_liste):
     status_code = requests.get(urz)
     if status_code.ok:
         nouvelle_liste.append(urz)
     return nouvelle_liste
 
+
+# Corriger le lien de chaque livre pour le rendre consultable
 def books_links(page_categorie, le_lien_livres):
     res = requests.get(page_categorie)
     soupy = bs(res.text, 'html.parser')
@@ -53,12 +57,11 @@ def books_links(page_categorie, le_lien_livres):
     return(le_lien_livres)
         
 
-
+# traiter les informations récoltées d'un livre et les regrouper dans une variable
 def book_infos_from_cat_url(the_link):
     response = requests.get(the_link)
-    response.encoding = 'utf-8'
     if response.ok:
-        book_info_soup = bs(response.text, 'html.parser')
+        book_info_soup = bs(response.content, 'html.parser')
 
         # Findings & Treatments
         tds = book_info_soup.find_all('td')
@@ -73,32 +76,36 @@ def book_infos_from_cat_url(the_link):
         number_available = re.findall('\d+', tds_arr[5])
         number_available = cls(str(number_available), ["[", "]", "'"], '')
 
+        # Nettoyer les titres pour éviter les bugs et retirer toutes imperfections
         title = book_info_soup.title.string
-        title = cls(str(title), [' | Books to Scrape - Sandbox', '?', '**', '"', ',', 'â', '\x80', '\x99', '#', ":", ")", "(", '...', '*'], '')
+        title = cls(str(title), [' | Books to Scrape - Sandbox',":", ")", "(", '...', '*', '"', '#', '?', ','], '')
         title = title.strip()
-        title = title.replace("'", " ")
-        title = title.replace("Ã©", "é")
         title = title.replace(' ', '_')
         title = title.replace('/', '_')
         title = title.replace('Vol._', 'Vol.')
+
+        # ne garde que le texte entre crochets ou entre parenthèses
         title = re.sub(r'\([^)]*\)', '', title)
-        title = title[:84]
+        # enregiste uniquement les 84 premièrs caractères des titres trop longs
+        title = title[:84] 
 
         cat_lis = book_info_soup.find('ul', class_="breadcrumb").contents[5].find('a')
         cat_name = cat_lis.string.replace(' ', '-')
 
+        # Nettoyer l'url des images pour la rendre consultable
         img_url = book_info_soup.find("div", class_="item active").find_next('img').get('src')
         img_url = img_url.replace('../../', 'http://books.toscrape.com/')
 
+        # Si un livre ne possède pas de description, remplacer sa valeur par 'Not Found'
         try:
             product_description = book_info_soup.find('div', id="product_description").find_next('p').next_element
         except AttributeError:
             product_description = "Not Found"
         
+        # Récupérer la deuxième valeur de la classe "instock availability"
         review_rating = book_info_soup.find("p", class_="instock availability").find_next('p').get('class')[1]
-
+        # Transformer les lettres en chiffres
         rating_numbers = {'One':1, 'Two':2, 'Three':3, 'Four':4, 'Five':5}
-
         for key, value in rating_numbers.items():
             if review_rating in key:
                 review_rating = review_rating.replace(review_rating, str(value))
@@ -107,14 +114,11 @@ def book_infos_from_cat_url(the_link):
         category_name = cat_name
         image_url = img_url
         url_livre = the_link
-        try:
-            product_description = cls(str(product_description), [',', ' -- ', '--', '—', '  ', '“', '”', '"', '•'], ' ')
-        except:
-            pass
-
+        product_description = cls(str(product_description), ['—', '--', '"', '-'], ' ')
         the_books_list = url_livre,universal_product_code,title,price_including_tax,price_excluding_tax,number_available,category_name,review_rating,image_url,product_description
         return the_books_list
 
+# Enregistrer les informations de chaque livre dans le fichier csv ainsi que chaque image dans le dossier de sa catégorie
 def write_infos(the_books_list):
     f = open(f'infos.csv', 'a', encoding="utf-8", newline="")
     with f:
@@ -133,7 +137,7 @@ def write_infos(the_books_list):
             im = requests.get(the_books_list[8])
             f.write(im.content)
 
-
+# Créer le dossier qui regroupe toutes les informations du site books.toscrape.com
 def website_create_folders(tfold, cat_list_tt):
     print('Veuillez patienter, création du dossier tout_le_site\n')
     # Create the tout_le_site folder and its tout_le_site_titles folders
