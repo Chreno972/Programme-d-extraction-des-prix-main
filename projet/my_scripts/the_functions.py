@@ -1,5 +1,4 @@
 
-# IMPORTS
 #################################################################
 import re
 import csv
@@ -11,21 +10,35 @@ from bs4 import BeautifulSoup as bs
 from pathlib import Path
 #################################################################
 
-
+# Définition du chemin dans lequel sera stocké les extractions du site
 base_dir = Path(os.getcwd())
 tfold = base_dir / 'downloads/tout_le_site'
 
 
-# fonction utile pour remplacer plusieurs caractères d'une string
-def cls(str_to_clean, replacement_items_array, replace_by): 
+
+def cls(str_to_clean, replacement_items_array, replace_by):
+    '''
+    Prend en entrée la chaine de caractère concernée, 
+    les caractères à remplacer, et le caractère de remplacement
+    chaque élément à remplacer retrouvé dans la chaine de
+    caractères est remplacée et la chaine modifié est retournée
+    ''' 
     for item in replacement_items_array:
         if item in str_to_clean:
             str_to_clean = str_to_clean.replace(item, replace_by)
     return(str_to_clean)
+# print(cls.__doc__)
 
 
-# récupérer le lien de chaque catégorie, et trouver les catégories avec plusieurs pages
+
 def get_cat_book_link(lien, liste):
+    '''
+    Prend en entrée un lien ainsi qu'une liste vide.
+    Le lien est ajouté à la liste, ensuite, le script
+    cherche s'il existe d'autres page à partir du lien,
+    tant qu'il en existe, il les rajoute à la liste,
+    sinon, il passe à la prochaine exécution.
+    '''
     liste.append(lien)
     try:
         for i in range(2,9):
@@ -35,18 +48,34 @@ def get_cat_book_link(lien, liste):
                 liste.append(uri)
     except:
         pass
+# print(get_cat_book_link.__doc__)
 
 
-# Sauvegarder dans une nouvelle liste uniquement les urls fonctionnelles
+
 def urx_treatments(urz, nouvelle_liste):
+    '''
+    Prend en entrée l'url dans la liste précédente
+    il regarde si cette url existe, si son status_code
+    est 200. Si vrai, il ajoute l'url dans la nouvelle_liste.
+    Ceci est très pratique quand notre liste contient
+    plusieurs urls à traiter.
+    '''
     status_code = requests.get(urz)
     if status_code.ok:
         nouvelle_liste.append(urz)
     return nouvelle_liste
+# print(urx_treatments.__doc__)
 
 
-# Corriger le lien de chaque livre pour le rendre consultable
+
 def books_links(page_categorie, le_lien_livres):
+    '''
+    Prend en entrée page_categorie qui représente 
+    un des liens d'une liste, et la liste vide le_lien_livres.
+    chaque lien est inspecté avec requests.get(lien)
+    la page du lien est parcourue afin d'extraire des informations
+    les informations sont ajoutées à la liste le_lien_livres
+    '''
     res = requests.get(page_categorie)
     soupy = bs(res.text, 'html.parser')
     product_pods = soupy.find_all(class_="product_pod")
@@ -55,10 +84,17 @@ def books_links(page_categorie, le_lien_livres):
         book_link = book_link.replace('../../../', 'https://books.toscrape.com/catalogue/')
         le_lien_livres.append(book_link)
     return(le_lien_livres)
-        
+# print(books_links.__doc__)      
 
-# traiter les informations récoltées d'un livre et les regrouper dans une variable
+
+
 def book_infos_from_cat_url(the_link):
+    '''
+    Prend en entrée un lien, parcours la page associée à celui-ci,
+    récupère certaines informations de cette page, crée un tuple
+    contenant chaque variable associée à chaque extraction d'informations
+    et retourne ce tuple
+    '''
     response = requests.get(the_link)
     if response.ok:
         book_info_soup = bs(response.content, 'html.parser')
@@ -117,9 +153,18 @@ def book_infos_from_cat_url(the_link):
         product_description = cls(str(product_description), ['—', '--', '"', '-'], ' ')
         the_books_list = url_livre,universal_product_code,title,price_including_tax,price_excluding_tax,number_available,category_name,review_rating,image_url,product_description
         return the_books_list
+# print(book_infos_from_cat_url.__doc__)
 
-# Enregistrer les informations de chaque livre dans le fichier csv ainsi que chaque image dans le dossier de sa catégorie
+
+
 def write_infos(the_books_list):
+    '''
+    Prend en entrée, le tuple qui contient toutes les informations extraites du site
+    Cette fonction ouvre le fichier csv du dossier dans lequel nous nous trouvons
+    enregistre chaque information du tuple de manière structurée, séparées par une virgule
+    et les unes au-dessus des autres. Puis elle enregistre l'image associée à chaque ligne
+    d'informations (chaque livre). 
+    '''
     f = open(f'infos.csv', 'a', encoding="utf-8", newline="")
     with f:
         fnames = ['url_livre','universal_product_code','title','price_including_tax','price_excluding_tax','number_available','category_name','review_rating','image_url','product_description']
@@ -136,11 +181,20 @@ def write_infos(the_books_list):
         with open(f"{titre}.jpg", "wb") as f:
             im = requests.get(the_books_list[8])
             f.write(im.content)
+# print(write_infos.__doc__)
 
-# Créer le dossier qui regroupe toutes les informations du site books.toscrape.com
+
+
 def website_create_folders(tfold, cat_list_tt):
+    '''
+    Prend en entrée notre position actuelle dans la structure du projet
+    et une liste contenant des informations (les titres des catégories)
+    Elle crée pour chacune des ces informations, un sous dossier portant 
+    son nom, et dans chacun de ces sous_dossiers, elle crée un fichier
+    csv, ainsi qu'un dossier images qui contiendra comme son nom l'indique 
+    des images
+    '''
     print('Veuillez patienter, création du dossier tout_le_site\n')
-    # Create the tout_le_site folder and its tout_le_site_titles folders
     if not os.path.exists('tout_le_site'):
         os.chdir('downloads')
         os.mkdir('tout_le_site')
@@ -173,3 +227,4 @@ def website_create_folders(tfold, cat_list_tt):
     time.sleep(2)
     print("maintenant veuillez patienter quelques minutes le temps de la récolte des données\n")
     os.chdir('../')
+    # print(website_create_folders.__doc__)
