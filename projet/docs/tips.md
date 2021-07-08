@@ -441,3 +441,10 @@ que l'on puisse la récupérer par la suite. En python, on peut récupérer un r
     return [one,two,three]
     => `one = lafonction(argument)[0]`
     => `two = lafonction(argument)[1]`
+
+---
+
+Linters et formaters
+
+- Un linter, parcours notre code et nous propose de meilleures manières d'écrire ce code
+- Un formater parcours notre code et le change selon les normes en vigeur
