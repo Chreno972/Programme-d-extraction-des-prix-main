@@ -138,10 +138,28 @@ ou
   - Chaque dossier de catégorie contiendra
     - un fichier csv contenant les informations de chaque livre de cette catégorie
     ainsi qu'un dossier contenant les images de chaque livre de cette catégorie
-    
+
 **Vous pouvez à tout moment accéder aux informations téléchargées:**
 
 - Depuis votre dossier directement
 - Depuis votre éditeur de code si le click droit de la souris vous permet d'ouvrir le dossier en même temps que l'éditeur de code
 - Depuis la ligne de commande
-    -  Par exemple si vous utilisez VSCode, depuis la ligne de commande, vous tapez "code"
+  - Par exemple si vous utilisez VSCode, depuis la ligne de commande, vous tapez "code"
+
+---
+---
+
+## **LIENS UTILISES**
+
+**books:**
+
+`https://books.toscrape.com/catalogue/sharp-objects_997/index.html` Sharp_objects - Mystery
+`https://books.toscrape.com/catalogue/saga-volume-2-saga-collected-editions-2_107/index.html` Saga_volume_2 - Sequential Art
+`https://books.toscrape.com/catalogue/when-we-collided_955/index.html` When we collided - Contemporary
+`https://books.toscrape.com/catalogue/the-golden-condom-and-other-essays-on-love-lost-and-found_637/index.html` The golden condom - Psychology
+
+**categories:**
+`https://books.toscrape.com/catalogue/category/books/travel_2/index.html` Travel - 1 page - 11 livres
+`https://books.toscrape.com/catalogue/category/books/mystery_3/index.html` Mystery - 2 pages - 32 livres
+`https://books.toscrape.com/catalogue/category/books/sequential-art_5/index.html` Sequential Art - 4 pages - 75 livres
+`https://books.toscrape.com/catalogue/category/books/default_15/index.html` Default - 8 pages - 152 livres
