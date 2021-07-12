@@ -7,7 +7,7 @@ import requests
 from bs4 import BeautifulSoup as bs
 from pathlib import Path
 import the_functions as tf
-
+import subprocess as sb
 #################################################################
 # instanciate route to avoid confusions
 base_dir = Path(os.getcwd())
@@ -73,11 +73,14 @@ if "https://books.toscrape.com/catalogue/category/books/" in url:
     for livres in os.listdir("images"):
         liste_livres.append(livres)
     print(
-        f"Bravo, vous avez téléchargé {len(liste_livres)} livres, vous pouvez dès à présent les consulter depuis la rubrique downloads/categories"
+        f"Bravo, vous avez téléchargé {len(liste_livres)} livres, vous pouvez dès à présent les consulter depuis la rubrique downloads/categories\n"
     )
+    time.sleep(3)
+    os.chdir('../../../')
+    sb.call('py menu_principal.py 1', shell=True)
 
 else:
     print(
-        "par mesures de sécurité, Seule une url provenant du site 'bookstoscrape.com' est autorisée, veuillez recommencer\n"
+        "par mesures de sécurité, Seule une url de catégorie et provenant du site 'bookstoscrape.com' est autorisée, veuillez recommencer\n"
     )
     time.sleep(3)
