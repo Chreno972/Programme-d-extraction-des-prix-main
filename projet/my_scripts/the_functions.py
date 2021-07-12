@@ -16,11 +16,18 @@ tfold = base_dir / "downloads/tout_le_site"
 
 
 def cls(str_to_clean, replacement_items_array, replace_by):
-    """
-    Prend en entrée la chaine de caractère concernée,
-    les caractères à remplacer, et le caractère de remplacement
-    chaque élément à remplacer retrouvé dans la chaine de
-    caractères est remplacée et la chaine modifié est retournée
+    """[
+        fonction qui remplace les caractères spéciaux d'une 
+        string par un autre
+        ]
+
+    Args:
+        str_to_clean ([string]): [chaine de caractère concernée]
+        replacement_items_array ([string]): [caractères à remplacer]
+        replace_by ([string]): [caractère de remplacement]
+
+    Returns:
+        [string]: [la chaine de caractères modifiée]
     """
     for item in replacement_items_array:
         if item in str_to_clean:
@@ -32,12 +39,14 @@ def cls(str_to_clean, replacement_items_array, replace_by):
 
 
 def get_cat_book_link(lien, liste):
-    """
-    Prend en entrée un lien ainsi qu'une liste vide.
-    Le lien est ajouté à la liste, ensuite, le script
-    cherche s'il existe d'autres page à partir du lien,
-    tant qu'il en existe, il les rajoute à la liste,
-    sinon, il passe à la prochaine exécution.
+    """[
+        Fonction qui placera un ou plusieurs liens de catégorie 
+        selon que la catégorie en contient plusieurs
+        ]
+
+    Args:
+        lien ([string]): [le lien d'une catégorie]
+        liste ([list]): [une liste vide qui contiendra un ou plusieurs liens]
     """
     liste.append(lien)
     try:
@@ -54,12 +63,17 @@ def get_cat_book_link(lien, liste):
 
 
 def urx_treatments(urz, nouvelle_liste):
-    """
-    Prend en entrée l'url dans la liste précédente
-    il regarde si cette url existe, si son status_code
-    est 200. Si vrai, il ajoute l'url dans la nouvelle_liste.
-    Ceci est très pratique quand notre liste contient
-    plusieurs urls à traiter.
+    """[
+        fonction qui vérifie si l'url existe et qui le 
+        cas échéant sera placée dans une liste
+        ]
+
+    Args:
+        urz ([string]): [une ou plusieurs url provenant de la liste]
+        nouvelle_liste ([list]): [une liste vide]
+
+    Returns:
+        [list]: [contient un ou plusieurs lien fonctionnels]
     """
     status_code = requests.get(urz)
     if status_code.ok:
@@ -71,12 +85,17 @@ def urx_treatments(urz, nouvelle_liste):
 
 
 def books_links(page_categorie, le_lien_livres):
-    """
-    Prend en entrée page_categorie qui représente
-    un des liens d'une liste, et la liste vide le_lien_livres.
-    chaque lien est inspecté avec requests.get(lien)
-    la page du lien est parcourue afin d'extraire des informations
-    les informations sont ajoutées à la liste le_lien_livres
+    """[
+        fonction qui parcours la page d'une catégorie et 
+        récupère les liens de tous ses livres
+        ]
+
+    Args:
+        page_categorie ([string]): [un lien de la liste 'nouvelle_liste']
+        le_lien_livres ([liste]): [une liste vide]
+
+    Returns:
+        [list]: [contient tous les liens des livres d'une catégorie]
     """
     res = requests.get(page_categorie)
     soupy = bs(res.text, "html.parser")
@@ -94,11 +113,16 @@ def books_links(page_categorie, le_lien_livres):
 
 
 def book_infos_from_cat_url(the_link):
-    """
-    Prend en entrée un lien, parcours la page associée à celui-ci,
-    récupère certaines informations de cette page, crée un tuple
-    contenant chaque variable associée à chaque extraction d'informations
-    et retourne ce tuple
+    """[
+        fonction qui récupère des informations d'un livre 
+        et les stocke dans un tuple
+        ]
+
+    Args:
+        the_link ([string]): [lien d'un livre d'une catégorie]
+
+    Returns:
+        [tuple]: [contient toutes les informations d'un livre]
     """
     response = requests.get(the_link)
     if response.ok:
@@ -200,12 +224,13 @@ def book_infos_from_cat_url(the_link):
 
 
 def write_infos(the_books_list):
-    """
-    Prend en entrée, le tuple qui contient toutes les informations extraites du site
-    Cette fonction ouvre le fichier csv du dossier dans lequel nous nous trouvons
-    enregistre chaque information du tuple de manière structurée, séparées par une virgule
-    et les unes au-dessus des autres. Puis elle enregistre l'image associée à chaque ligne
-    d'informations (chaque livre).
+    """[
+        fonction qui télécharge l'image d'un livre et inscrit les 
+        informations d'un de ces livres dans un fichier csv
+        ]
+
+    Args:
+        the_books_list ([tuple]): [contient toutes les informations d'un livre d'une catégorie]
     """
     f = open(f"infos.csv", "a", encoding="utf-8", newline="")
     with f:
@@ -251,13 +276,14 @@ def write_infos(the_books_list):
 
 
 def website_create_folders(tfold, cat_list_tt):
-    """
-    Prend en entrée notre position actuelle dans la structure du projet
-    et une liste contenant des informations (les titres des catégories)
-    Elle crée pour chacune des ces informations, un sous dossier portant
-    son nom, et dans chacun de ces sous_dossiers, elle crée un fichier
-    csv, ainsi qu'un dossier images qui contiendra comme son nom l'indique
-    des images
+    """[
+        fonction qui crée tous le dossier des données du site, ses sous dossiers ainsi 
+        qu'un dossier images, un fichier csv pour chacun des sous dossiers
+        ]
+
+    Args:
+        tfold ([path]): [chemin dans lequel sera crée des sous dossiers]
+        cat_list_tt ([list]): [liste contenant tous les noms des catégories]
     """
     print("Veuillez patienter, création du dossier tout_le_site\n")
     if not os.path.exists("tout_le_site"):
