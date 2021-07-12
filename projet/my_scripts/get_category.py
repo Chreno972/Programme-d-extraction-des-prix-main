@@ -9,7 +9,7 @@ from pathlib import Path
 import the_functions as tf
 import subprocess as sb
 #################################################################
-# instanciate route to avoid confusions
+# instancie le dossier qui contiendra les catégories téléchargées
 base_dir = Path(os.getcwd())
 test_folder = base_dir / "downloads/categories"
 
@@ -24,19 +24,19 @@ new_list = []
 books_link = []
 
 
-# Condition to trigger the scripts
+# Condition pour déclencher le reste du programme
 if "https://books.toscrape.com/catalogue/category/books/" in url:
 
-    # we go to the categories folder route
+    # le programme se place dans le dossier où sont téléchargées les catégories
     os.chdir(test_folder)
 
-    # Create the category folder, th
+    # récupère et nettoie le nom de la catégorie
     requete = requests.get(url)
     soup_one = bs(requete.text, "html.parser")
     titre_categorie = soup_one.find("h1").string.strip()
     titre_categorie = titre_categorie.replace(" ", "_")
 
-    # Create the category folder
+    # crée le dossier portant le nom de la catégorie
     try:
         if not os.path.exists(titre_categorie):
             os.mkdir(titre_categorie)
@@ -45,13 +45,13 @@ if "https://books.toscrape.com/catalogue/category/books/" in url:
 
     os.chdir(titre_categorie)
 
-    # Create the images sub folder
+    # crée le sous dossier images
     try:
         os.mkdir("images")
     except:
         pass
 
-    # Create the csv file
+    # crée un fichier csv
     cmd = f"echo product_page_url;universal_product_code;title;price_including_tax;price_excluding_tax;number_available;category;review_rating;image_url;product_description > infos.csv"
     os.system(cmd)
 
@@ -67,7 +67,7 @@ if "https://books.toscrape.com/catalogue/category/books/" in url:
         tf.write_infos(tf.book_infos_from_cat_url(book))
         os.chdir("../")
 
-    # display the number of downloaded books
+    # affiche le nombre d'images présent dans le dossier de catégorie
     time.sleep(3)
     liste_livres = []
     for livres in os.listdir("images"):
